@@ -4,10 +4,6 @@ from services.clima_service import consultar_clima
 from services.risco_service import calcular_risco
 from services.arduino_service import obter_dados_sensor
 
-dados_sensor = obter_dados_sensor()
-distancia_sensor = dados_sensor["distancia_sensor"]
-distancia_maxima = dados_sensor["distancia_maxima"]
-
 app = FastAPI()
 
 @app.get("/")
@@ -18,6 +14,10 @@ def home():
 
 @app.get("/status-rua")
 def status_rua(rua:str,bairro:str,cidade:str,estado:str):
+
+    dados_sensor = obter_dados_sensor()
+    distancia_sensor = dados_sensor["distancia_sensor"]
+    distancia_maxima = dados_sensor["distancia_maxima"]
 
     coordenadas = buscar_coordenadas(rua,bairro,cidade,estado)
 
