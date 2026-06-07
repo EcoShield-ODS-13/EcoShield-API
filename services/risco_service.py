@@ -14,7 +14,8 @@ def calcular_risco(chuva, distancia_sensor, distancia_maxima):
 
     nivel_agua = calcular_nivel_agua(distancia_sensor, distancia_maxima)
 
-    risco = (0.5 * chuva +10)+(0.3 * nivel_agua)
+    risco_chuva = chuva * 3
+    risco = (0.4 * risco_chuva)+(0.6 * nivel_agua)
 
     if risco >100:
         risco =100
@@ -23,10 +24,14 @@ def calcular_risco(chuva, distancia_sensor, distancia_maxima):
         nivel = "CRÍTICO"
         status = "ALAGADA"
         cor = "red"
-    elif risco >61:
+    elif risco >=60:
         nivel = "ALTO"
-        status = "RISCO ALTO"
+        status = "RISCO ALTO DE ENCHENTE"
         cor = "orange"
+    elif risco >=25:
+        nivel = "MÉDIO"
+        status = "ATENÇÃO"
+        cor = "yellow"
     else:
         nivel = "BAIXO"
         status = "SEGURA"
