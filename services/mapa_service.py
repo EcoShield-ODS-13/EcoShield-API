@@ -12,7 +12,7 @@ def buscar_ruas_osm(lat_min,lat_max,lon_min,lon_max):
     (
        way["highway"]["name"]({lat_min},{lon_min},{lat_max},{lon_max});
     );
-    out center;
+    out geom;
     """
 
     headers = {
@@ -38,14 +38,19 @@ def buscar_ruas_osm(lat_min,lat_max,lon_min,lon_max):
 
     for elemento in data['elements']:
         nome_rua = elemento.get("tags",{}).get("name","Rua sem nome")
-        if center is None:
+        geometria = elemento.get("geometry",[])
+
+        if len(geometria) == 0:
             continue
+        pontos_meio = geometria[len(geometria)//2]
 
         ruas.append({
             "nome": nome_rua,
-            "latitude": center["lat"],
-            "longitude": center["lon"]
+            "latitude": pontos_meio["lat"],
+            "longitude": pontos_meio["lon"],
+            "geometria": geometria
         })
+
     return ruas
 
 def gerar_riscos_area(lat_min,lat_max,lon_min,lon_max):
