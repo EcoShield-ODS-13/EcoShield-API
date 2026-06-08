@@ -12,7 +12,7 @@ def buscar_ruas_osm(lat_min,lat_max,lon_min,lon_max):
     (
        way["highway"]["name"]({lat_min},{lon_min},{lat_max},{lon_max});
     );
-    out geom 50;
+    out geom;
     """
 
     headers = {
@@ -40,7 +40,7 @@ def buscar_ruas_osm(lat_min,lat_max,lon_min,lon_max):
         nome_rua = elemento.get("tags",{}).get("name","Rua sem nome")
         geometria = elemento.get("geometry",{})
 
-        if len(geometria) is None:
+        if len(geometria) == 0:
             continue
 
         ponto_meio = geometria[len(geometria)//2]
@@ -53,41 +53,41 @@ def buscar_ruas_osm(lat_min,lat_max,lon_min,lon_max):
         })
     return ruas
 
+print("Buscando ruas...")
 def gerar_riscos_area(lat_min,lat_max,lon_min,lon_max):
     ruas = buscar_ruas_osm(lat_min, lat_max, lon_min, lon_max)
+    print(f"Ruas encontradas: {len(ruas)}")
 
     resultado = []
 
-    for rua in ruas[:15]:
+    lat_centro = (lat_min + lat_max)/2
+    lon_centro = (lon_min + lon_max)/2
+    clima_area = consultar_clima(lat_centro, lon_centro)
+
+    for rua in ruas :
+        nome_rua = rua.get("nome", "Rua sem nome")
+        print("Processando:", nome_rua)
 
         if "latitude" not in rua or "longitude" not in rua:
-            return {
-                "erro": "Não foi possível carregar ruas do OpenStreetMap",
-                "detalhes": rua
-            }
-
-        clima = consultar_clima(
-            rua["latitude"],
-            rua["longitude"]
-        )
+            continue
 
         dados_sensor = obter_dados_sensor(
-            clima["chuva"],
-            clima["precipitacao"],
+            clima_area["chuva"],
+            clima_area["precipitacao"],
         )
 
         risco = calcular_risco(
-            clima["chuva"],
+            clima_area["chuva"],
             dados_sensor["distancia_sensor"],
             dados_sensor["distancia_maxima"]
         )
 
         resultado.append({
-            "rua": rua["nome"],
+            "rua": nome_rua,
             "latitude": rua["latitude"],
             "longitude": rua["longitude"],
-            "geometria": rua["geometria"],
-            "clima": clima,
+            "geometria": rua.get("geometria", []),
+            "clima": clima_area,
             "risco": risco,
             "modo_sensor": dados_sensor["modo"]
        })
