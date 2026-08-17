@@ -78,25 +78,7 @@ Entre na pasta:
 cd EcoShield-API
 ```
 
-### 2. Crie um ambiente virtual
-
-```bash
-python -m venv .venv
-```
-
-No Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-No Linux/macOS:
-
-```bash
-source .venv/bin/activate
-```
-
-### 3. Instale as dependências
+### 2. Instale as dependências
 
 ```bash
 pip install fastapi uvicorn requests pyserial
