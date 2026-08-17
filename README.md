@@ -81,7 +81,7 @@ cd EcoShield-API
 ### 2. Instale as dependências
 
 ```bash
-pip install fastapi uvicorn requests pyserial
+python -m pip install fastapi uvicorn requests pyserial
 ```
 
 ## ▶️ Executando o projeto
@@ -89,7 +89,7 @@ pip install fastapi uvicorn requests pyserial
 Execute:
 
 ```bash
-uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 
 A API ficará disponível localmente em:
